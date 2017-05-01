@@ -5,4 +5,5 @@ lib/
 .geth_data/
 *xmlhttprequest*
 res/password.pass
+npm-debug.log
 .DS_store

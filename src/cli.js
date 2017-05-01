@@ -1,19 +1,11 @@
 #!/usr/bin/env node --harmony
+import * as finlib from 'fincontracts-lib';
 import {BigNumber} from 'bignumber.js';
 import {Gateway} from '../contracts/bin/gateway';
-import {GatewayInteger} from '../contracts/bin/gatewayint';
 import {GatewayBool} from '../contracts/bin/gatewaybool';
+import {GatewayInteger} from '../contracts/bin/gatewayint';
 import {FincontractMarketplace} from '../contracts/bin/marketplace';
-import Serializer from './lib/fincontract-serializer';
-import Evaluator from './lib/fincontract-evaluator';
-import Deployer from './lib/fincontract-deployer';
-import Executor from './lib/fincontract-executor';
-import Examples from './lib/fincontract-examples';
-import Fetcher from './lib/fincontract-fetcher';
-import Parser from './lib/fincontract-parser';
-import Sender from './lib/tx-sender';
 import FincontractStorage from './storage';
-import Currency from './lib/currency';
 
 const figures = require('figures');
 const logSymbols = require('log-symbols');
@@ -66,7 +58,7 @@ function connectToEthereumNode(url) {
 
 async function checkAndRegisterAccount() {
   if (!marketplace.isRegistered.call()) {
-    return new Sender(marketplace, web3)
+    return new finlib.Sender(marketplace, web3)
       .send('register', [])
       .watch({event: 'Registered'}, logs => logs.args.user);
   }
@@ -85,7 +77,7 @@ function printFincontract(name, fincontract, detailed) {
 }
 
 function saveFincontract(fincontract, name, overwrite) {
-  const srz = new Serializer();
+  const srz = new finlib.Serializer();
   const serialized = srz.serialize(fincontract);
   if (storage.addFincontract(name, serialized, overwrite)) {
     cli.log(info(`Fincontract saved as '${name}'`));
@@ -138,7 +130,7 @@ cli
   .validate(isNodeConnected)
   .description('Shows balance of currently selected account')
   .action((args, cb) => {
-    const balance = Currency.convertToJSON(marketplace.getMyBalance.call());
+    const balance = finlib.Currency.convertToJSON(marketplace.getMyBalance.call());
     cli.log(ok(JSON.stringify(balance)));
     cb();
   });
@@ -184,8 +176,8 @@ cli
   .validate(isNodeConnected)
   .action(async (args, cb) => {
     const expression = args.expr;
-    const p = new Parser();
-    const d = new Deployer(marketplace, web3);
+    const p = new finlib.Parser();
+    const d = new finlib.Deployer(marketplace, web3);
     try {
       let createdFincontractID;
       const desc = await p.parse(expression);
@@ -199,7 +191,7 @@ cli
       if (args.options.save) {
         const name = args.options.save;
         const ow = args.options.overwrite;
-        const f = new Fetcher(marketplace);
+        const f = new finlib.Fetcher(marketplace);
         const fincontract = await f.pullFincontract(createdFincontractID);
         saveFincontract(fincontract, name, ow);
       }
@@ -217,7 +209,7 @@ cli
   .validate(isNodeConnected)
   .description('Joins a fincontract from the currently selected account')
   .action(async (args, cb) => {
-    const exec = new Executor(marketplace, gateway, web3);
+    const exec = new finlib.Executor(marketplace, gateway, web3);
     const id = parseAddress(args.id);
     try {
       let executed;
@@ -240,7 +232,7 @@ cli
   .autocomplete({data: () => storage.getFincontractIDs()})
   .option('-s, --save <name>', 'Save fincontract description as [name]')
   .option('-e, --eval <method>', 'Evaluate fincontract using a method', ['direct', 'estimate'])
-  .option('--convert <base>', 'Convert result of evaluation to currency', Object.values(Currency.Currencies))
+  .option('--convert <base>', 'Convert result of evaluation to currency', Object.values(finlib.Currency.Currencies))
   .option('--overwrite', 'Overwrites the contract if it already exists with same name!')
   .types({string: ['_']})
   .description('Pulls contract from blockchain.')
@@ -248,7 +240,7 @@ cli
   .action(async (args, cb) => {
     try {
       const id = parseAddress(args.id);
-      const f = new Fetcher(marketplace);
+      const f = new finlib.Fetcher(marketplace);
 
       const fincontract = await f.pullFincontract(id);
       if (storage.addFincontractID(id)) {
@@ -260,12 +252,12 @@ cli
         saveFincontract(fincontract, name, ow);
       }
       if (args.options.eval) {
-        const e = new Evaluator(gateway, web3);
+        const e = new finlib.Evaluator(gateway, web3);
         const base = args.options.convert || 'USD';
         const method = args.options.eval;
         const evaluated = await e.evaluate(fincontract.rootDescription, {method});
-        const currencies = Currency.convertToJSON(evaluated);
-        const exchanged = await Currency.changeAllCurrencies(base, currencies);
+        const currencies = finlib.Currency.convertToJSON(evaluated);
+        const exchanged = await finlib.Currency.changeAllCurrencies(base, currencies);
         cli.log(info(JSON.stringify(currencies)));
         cli.log(info(JSON.stringify(exchanged)));
       }
@@ -325,12 +317,12 @@ cli
 
 cli
   .command('example <index>').alias('ex')
-  .autocomplete(Examples.AllExamples)
+  .autocomplete(finlib.Examples.AllExamples)
   .validate(isNodeConnected)
   .description('Deploys one of the examples from marketplace smart contract')
   .action(async (args, cb) => {
     try {
-      const ex = new Examples(marketplace, gatewaybool, gatewayint, web3);
+      const ex = new finlib.Examples(marketplace, gatewaybool, gatewayint, web3);
       const fctID = await ex.runExample(args.index);
       if (storage.addFincontractID(fctID)) {
         cli.log(info('ID added to autocomplete!'));
