@@ -1,9 +1,8 @@
 history
 contracts/bin/
 node_modules/
-build/
+lib/
 .geth_data/
 *xmlhttprequest*
 res/password.pass
-docs
 .DS_store
