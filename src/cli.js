@@ -7,8 +7,9 @@ import {GatewayInteger} from '../contracts/bin/gatewayint';
 import {FincontractMarketplace} from '../contracts/bin/marketplace';
 import FincontractStorage from './storage';
 
-const figures = require('figures');
+const commandExists = require('command-exists');
 const logSymbols = require('log-symbols');
+const figures = require('figures');
 const cli = require('vorpal')();
 const chalk = require('chalk');
 const Web3 = require('web3');
@@ -62,6 +63,45 @@ async function checkAndRegisterAccount() {
       .send('register', [])
       .watch({event: 'Registered'}, logs => logs.args.user);
   }
+}
+
+function generateDOTGraph(fctID, options) {
+  return commandExists('dot')
+    .then(async cmd => {
+      const dg = new finlib.DotGenerator();
+      const f = new finlib.Fetcher(marketplace);
+      const fincontract = await f.pullFincontract(fctID);
+      const dotString = dg.generate(fincontract);
+      const fs = require('fs');
+      const path = require('path');
+      const basename = (options.graph === true) ? `/tmp/fincontract` : options.graph;
+      const dotFilename = `${basename}.dot`;
+      const pdfFilename = `${basename}.pdf`;
+      fs.writeFile(dotFilename, dotString, (err) => {
+        if(err) {
+            return cli.log(error(err));
+        }
+        cli.log(info(`Written DOT file to: ${dotFilename}`));
+      });
+      if (options['only-dot']) {
+        cli.log(info('--only-dot option was selected, skipping PDF generation...'));
+        return;
+      }
+      const exec = require('child_process').exec;
+      const command = `dot -Tpdf ${dotFilename} -o ${pdfFilename}`
+      exec(command, (err, stdout, stderr) => {
+        if (stdout) {
+          cli.log(info(`stdout: ${stdout}`));
+        }
+        if (stderr) {
+          cli.log(warn(`stderr: ${stderr}`));
+        }
+        if (err) {
+          cli.log(error(err));
+        }
+      });
+    })
+    .catch(err => cli.log(error(err)));
 }
 
 function printFincontract(name, fincontract, detailed) {
@@ -290,14 +330,19 @@ cli
 
 cli
   .command('show-fincontract <name>').alias('sf')
+  .option('-g, --graph [path]', 'Generate a graph using DOT engine')
+  .option('--only-dot', 'If --graph option was selected, it will only save DOT file')
   .autocomplete({data: () => Object.keys(storage.getFincontracts())})
   .validate(isNodeConnected)
-  .description('Shows detailed information about a saved fincontract')
+  .description('Shows detailed information about a saved fincontract. Can visualize graph using Graphviz')
   .action((args, cb) => {
     const name = args.name;
     const fincontract = storage.getFincontractByName(name);
     if (fincontract) {
       printFincontract(name, fincontract, true);
+      if (args.options.graph) {
+        generateDOTGraph(fincontract.id, args.options);
+      }
     } else {
       cli.log(error('Contract not found!'));
     }
