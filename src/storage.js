@@ -18,6 +18,15 @@ class Storage {
     return true;
   }
 
+  removeFromStorage(category, key) {
+    const objects = this.getFromStorage(category);
+    if (!objects[key]) {
+      return false;
+    }
+    delete objects[key];
+    return true;
+  }
+
 }
 
 export default class FincontractStorage extends Storage {
@@ -51,6 +60,12 @@ export default class FincontractStorage extends Storage {
     return typeof id === 'string' &&
       this.addToStorage(FincontractStorage.IDS_CAT, id, true);
   }
+
+  removeFincontractID(id) {
+    return typeof id === 'string' &&
+      this.removeFromStorage(FincontractStorage.IDS_CAT, id);
+  }
+
 
   getFincontractIDs() {
     return Object.keys(this.getFromStorage(FincontractStorage.IDS_CAT));

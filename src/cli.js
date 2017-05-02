@@ -86,6 +86,19 @@ function saveFincontract(fincontract, name, overwrite) {
   }
 }
 
+function processExecutionResults(result) {
+  if (result.type === 'executed') {
+    cli.log(ok(`Fincontract was executed completely: ${result.deleted}`));
+  } else if (result.type === 'deferred') {
+    cli.log(warn(`Fincontract was deferred: ${result.deleted}`));
+    result.newFincontracts.forEach(fctID => {
+      cli.log(ok(`New Fincontract was created: ${fctID}`));
+      cli.log(info(`ID added to autocomplete!`));
+      storage.addFincontractID(fctID);
+    });
+  }
+}
+
 function autocompleteAccounts() {
   if (!web3.isConnected()) {
     return [];
@@ -131,7 +144,10 @@ cli
   .description('Shows balance of currently selected account')
   .action((args, cb) => {
     const balance = finlib.Currency.convertToJSON(marketplace.getMyBalance.call());
-    cli.log(ok(JSON.stringify(balance)));
+    cli.log(ok(`Balance of ${web3.eth.defaultAccount}`));
+    Object.keys(balance).forEach(k => {
+      cli.log(info(`${k}:\t${balance[k].toFixed(2)}`));
+    });
     cb();
   });
 
@@ -220,7 +236,7 @@ cli
       } else {
         executed = await exec.join(id);
       }
-      cli.log(info(JSON.stringify(executed)));
+      processExecutionResults(executed);
     } catch (err) {
       cli.log(error(err));
     }
@@ -258,8 +274,13 @@ cli
         const evaluated = await e.evaluate(fincontract.rootDescription, {method});
         const currencies = finlib.Currency.convertToJSON(evaluated);
         const exchanged = await finlib.Currency.changeAllCurrencies(base, currencies);
-        cli.log(info(JSON.stringify(currencies)));
-        cli.log(info(JSON.stringify(exchanged)));
+        cli.log(ok(`Evaluation results:`));
+        Object.keys(currencies).forEach(k => {
+          const [a, b] = currencies[k];
+          cli.log(info(`${k}:\t[${a.toFixed(2)}, ${b.toFixed(2)}]`));
+        });
+        const [a, b] = exchanged[base];
+        cli.log(ok(`Exchanged to ${base}: [${a.toFixed(2)}, ${b.toFixed(2)}]`));
       }
     } catch (err) {
       cli.log(error(err));
