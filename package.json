@@ -1,7 +1,7 @@
 {
   "name": "fincontracts-cli",
   "description": "CLI for interacting with Ethereum fincontracts",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "build": "babel src -d lib",
     "test": "xo"
