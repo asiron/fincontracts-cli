@@ -37,8 +37,10 @@ brew install ethereum solidity
 ```
 sudo apt-get update
 sudo apt-get install nodejs npm jq
+```
 
 #### Install `geth` and `solc`
+
 ```
 sudo apt-get install software-properties-common
 sudo add-apt-repository -y ppa:ethereum/ethereum
