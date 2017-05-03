@@ -148,12 +148,10 @@ function autocompleteAccounts() {
   return [...indicies, ...accounts];
 }
 
-connectToEthereumNode('http://localhost:8545');
-
 cli
   .command('connect <host>').alias('c')
-  .autocomplete(['localhost:8000'])
-  .description('Connnects to a local Ethereum node')
+  .autocomplete(['localhost:8545'])
+  .description('Connects to a local Ethereum node')
   .action((args, cb) => {
     const url = `http://${args.host}`;
     if (connectToEthereumNode(url)) {
@@ -167,7 +165,7 @@ cli
 cli
   .command('register').alias('r')
   .validate(isNodeConnected)
-  .description('Registers currently selected account')
+  .description('Registers the currently selected account')
   .action(async (args, cb) => {
     const user = await checkAndRegisterAccount();
     if (user) {
@@ -181,7 +179,7 @@ cli
 cli
   .command('show-balance').alias('sb')
   .validate(isNodeConnected)
-  .description('Shows balance of currently selected account')
+  .description('Shows balance of the currently selected account')
   .action((args, cb) => {
     const balance = finlib.Currency.convertToJSON(marketplace.getMyBalance.call());
     cli.log(ok(`Balance of ${web3.eth.defaultAccount}`));
@@ -213,9 +211,10 @@ cli
 
 cli
   .command('list-accounts').alias('la')
-  .description('Lists Ethereum accounts')
+  .description('Lists unlocked Ethereum accounts')
+  .validate(isNodeConnected)
   .action((args, cb) => {
-    cli.log(info('Available Ethereum accounts:'));
+    cli.log(info('Unlocked Ethereum accounts:'));
     web3.eth.accounts.forEach((account, index) => {
       cli.log(info(`${index}: ${account}`));
     });
@@ -224,11 +223,11 @@ cli
 
 cli
   .command('create-fincontract <expr>').alias('cf')
-  .option('-i, --issue <address>', 'Issues the fincontract after deploying to given address')
-  .option('-s, --save  <name>', 'Saves the contract after deploying to local storage')
-  .option('-ow, --overwrite', 'Overwrites the contract if it already exists with same name!')
+  .option('-i, --issue <address>', 'Issues the Fincontract after deploying to a given <address>')
+  .option('-s, --save  <name>', 'Saves the Fincontract after deploying with a given <name>')
+  .option('-ow, --overwrite', 'Overwrites the Fincontract if it already exists with the same name!')
   .types({string: ['i', 'issue']})
-  .description('Creates fincontract and deploys it to the blockchain')
+  .description('Creates a Fincontract and deploys it to the blockchain')
   .validate(isNodeConnected)
   .action(async (args, cb) => {
     const expression = args.expr;
@@ -260,10 +259,10 @@ cli
 cli
   .command('join-fincontract <id>').alias('jf')
   .autocomplete({data: () => storage.getFincontractIDs()})
-  .option('-o, --or [choice]', 'Select sub-fincontract from a root OR node', ['first', 'second'])
+  .option('-o, --or <choice>', 'Selects sub-Fincontract given its <id> and a <choice>', ['first', 'second'])
   .types({string: ['_']})
   .validate(isNodeConnected)
-  .description('Joins a fincontract from the currently selected account')
+  .description('Joins a Fincontract given its <id> from the currently selected account')
   .action(async (args, cb) => {
     const exec = new finlib.Executor(marketplace, gateway, web3);
     const id = parseAddress(args.id);
@@ -286,12 +285,12 @@ cli
 cli
   .command('pull-fincontract <id>').alias('pf')
   .autocomplete({data: () => storage.getFincontractIDs()})
-  .option('-s, --save <name>', 'Save fincontract description as [name]')
-  .option('-e, --eval <method>', 'Evaluate fincontract using a method', ['direct', 'estimate'])
-  .option('--convert <base>', 'Convert result of evaluation to currency', Object.values(finlib.Currency.Currencies))
-  .option('--overwrite', 'Overwrites the contract if it already exists with same name!')
+  .option('-s, --save <name>', `Save the Fincontract's description as <name>`)
+  .option('-e, --eval <method>', 'Evaluate the Fincontract using a <method>', ['direct', 'estimate'])
+  .option('--convert <base>', 'Converts the result of evaluation to a base currency', Object.values(finlib.Currency.Currencies))
+  .option('--overwrite', 'Overwrites the Fincontract if it already exists with the same name!')
   .types({string: ['_']})
-  .description('Pulls contract from blockchain.')
+  .description('Pulls a Fincontract from the blockchain.')
   .validate(isNodeConnected)
   .action(async (args, cb) => {
     try {
@@ -334,7 +333,7 @@ cli
   .option('--only-dot', 'If --graph option was selected, it will only save DOT file')
   .autocomplete({data: () => Object.keys(storage.getFincontracts())})
   .validate(isNodeConnected)
-  .description('Shows detailed information about a saved fincontract. Can visualize graph using Graphviz')
+  .description('Shows detailed information about a saved Fincontract as text or graph')
   .action((args, cb) => {
     const name = args.name;
     const fincontract = storage.getFincontractByName(name);
@@ -351,9 +350,8 @@ cli
 
 cli
   .command('list-fincontracts').alias('lf')
-  .option('-d, --detail', 'Lists detailed description of the fincontracts')
-  .validate(isNodeConnected)
-  .description('Lists all saved fincontracts')
+  .option('-d, --detail', 'Lists detailed description for every saved Fincontract')
+  .description('Lists all saved Fincontracts')
   .action((args, cb) => {
     const fincontracts = storage.getFincontracts();
     Object.keys(fincontracts).forEach(name => {
