@@ -1,7 +1,9 @@
 # fincontract-client
 Copyright (C) 2017 - Maciej Żurad, University of Luxembourg
 
-Client for managing financial contracts deployed on the Ethereum blockchain.
+Client for managing Fincontracts deployed on the Ethereum blockchain.
+For more information about Fincontracts see the paper:
+[Findel: Secure Derivative Contracts for Ethereum](https://orbilu.uni.lu/handle/10993/30975) 
 
 ## Getting Started
 
@@ -12,23 +14,39 @@ These instructions will get you a copy of the project up and running on your loc
 You will need the following software:
 
 - jq  [1.5]
-- npm [3.9.5]
-- nodejs [v6.2.2]
-- geth [1.5.7]
+- npm [4.1.2]
+- nodejs [v7.7.4]
+- geth [1.6.0-stable]
+- solc [0.4.10]
+- ruby [1.9.3]
 
-You can install `npm` and `nodejs` from  [nodejs.org](https://nodejs.org/en/download/) or if you're on Mac OS X with `brew` simply run
+#### Installing prerequisites on macOS using homebrew
 
 ```
-brew install node
+brew update
+brew upgrade
+brew install node jq
+brew tap ethereum/ethereum
+brew install ethereum solidity
 ```
 
-For installing `geth` follow instructions from [github.com/ethereum/go-ethereum](https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum)
-Last but not least, you can install `jq` on:
+#### Install prerequisites on Debian/Ubuntu
 
-- Debian/Ubuntu `sudo apt-get install jq`
-- Mac OS X `brew install jq`
 
-### Installing and Building
+#### Install `node.js`, `npm` and `jq`
+```
+sudo apt-get update
+sudo apt-get install nodejs npm jq
+
+#### Install `geth` and `solc`
+```
+sudo apt-get install software-properties-common
+sudo add-apt-repository -y ppa:ethereum/ethereum
+sudo apt-get update
+sudo apt-get install ethereum solc
+```
+
+### Building
 
 Initialize submodules and pull them by running (from the root of this repository)
 
@@ -37,25 +55,33 @@ git submodule init
 git submodule update
 ```
 
-Install all node dependecies and compile ES6 scripts to ES5 using
+Install all node dependecies and compile source files to ES5 using
 ```
 npm install
 npm run build
 ```
 
+You can also **"make install"** your CLI, such that it's visible from anywhere:
+```
+npm install -g
+npm link
+```
+
 ### Usage
 
 #### Setup
- If you want to setup the private blockchain, allocate some ether at the beginning, compile and deploy contracts to it (might take a while):
+You have to setup the private blockchain, create accounts and pre-allocate some ether at the beginning in order to deploy your contracts. This command will also automatically compile and deploy contracts to your private blockchain.
 ```
 ./blockchain setup
 ```
 The blockchain will be running in the background after initialization.
+
 #### Deploy
- If you just want to deploy contracts, then run:
+ If you just want to deploy or re-deploy your Smart Contracts, then run:
 ```
 ./blockchain deploy
 ```
+
 Blockchain has to be initialized (using `./blockchain setup`) and cannot be running in the background.
 
 #### Stop, Start, Restart and Attach
@@ -67,17 +93,6 @@ You can also stop, start, restart and attach to the current session.
 ./blockchain attach
 ```
 
-### Retrieving Financial Contracts from the blockchain and analyzing them.
-Once you have attached to the blockchain, you should see Java Script console. Run `loadScript('lib/fetch_fincontracts.js')` in order to fetch a test Fincontract. Once the transaction was mined, you should see the message:
-```
-Fincontract: <fctId>
-Created for: <user_address>
-```
-You can then use variable to `testFincontract` to view the contract. Furthemore, you can run `testFincontract.rootDescription.eval()` to see the evaluation of the financial contract.
-
 ### Development
 
-Remember to deploy contracts if you have changed Solidity contracts from `contracts/` directory and remember to run `npm run build` if you changed any of the JavaScript source files form `src`, you will have to reload the scripts as well in JS console.
-
-
-
+Remember to deploy contracts if you have changed Solidity contracts from `contracts/` directory and remember to run `npm run build` if you changed any of the JavaScript source files form `src`. [Pull requests](https://github.com/asiron/fincontracts-cli/pulls) or [Issues](https://github.com/asiron/fincontracts-cli/issues) are welcome!
