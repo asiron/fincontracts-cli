@@ -109,4 +109,4 @@ Run `$ fincli` and then type `help` to view all options.
 
 ### Development
 
-Remember to deploy contracts if you have changed Solidity contracts from `contracts/` directory and remember to run `npm run build` if you changed any of the JavaScript source files form `src`. [Pull requests](https://github.com/asiron/fincontracts-cli/pulls) or [Issues](https://github.com/asiron/fincontracts-cli/issues) are welcome!
+Remember to re-deploy contracts if you have changed Solidity contracts from `contracts/` directory and remember to run `$ npm run build` if you changed any of the JavaScript source files form `src`. [Pull requests](https://github.com/asiron/fincontracts-cli/pulls) or [Issues](https://github.com/asiron/fincontracts-cli/issues) are welcome!
