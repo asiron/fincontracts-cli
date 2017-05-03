@@ -23,11 +23,11 @@ You will need the following software:
 #### Installing prerequisites on macOS using homebrew
 
 ```
-brew update
-brew upgrade
-brew install node jq
-brew tap ethereum/ethereum
-brew install ethereum solidity
+$ brew update
+$ brew upgrade
+$ brew install node jq
+$ brew tap ethereum/ethereum
+$ brew install ethereum solidity
 ```
 
 #### Install prerequisites on Debian/Ubuntu
@@ -35,17 +35,17 @@ brew install ethereum solidity
 
 #### Install `node.js`, `npm` and `jq`
 ```
-sudo apt-get update
-sudo apt-get install nodejs npm jq
+$ sudo apt-get update
+$ sudo apt-get install nodejs npm jq
 ```
 
 #### Install `geth` and `solc`
 
 ```
-sudo apt-get install software-properties-common
-sudo add-apt-repository -y ppa:ethereum/ethereum
-sudo apt-get update
-sudo apt-get install ethereum solc
+$ sudo apt-get install software-properties-common
+$ sudo add-apt-repository -y ppa:ethereum/ethereum
+$ sudo apt-get update
+$ sudo apt-get install ethereum solc
 ```
 
 ### Building
@@ -53,35 +53,38 @@ sudo apt-get install ethereum solc
 Initialize submodules and pull them by running (from the root of this repository)
 
 ```
-git submodule init
-git submodule update
+$ git submodule init
+$ git submodule update
 ```
 
 Install all node dependecies and compile source files to ES5 using
 ```
-npm install
-npm run build
+$ npm install
+$ npm run build
 ```
 
 You can also **"make install"** your CLI, such that it's visible from anywhere:
 ```
-npm install -g
-npm link
+$ npm install -g
+```
+Alternatively, you can create a link to it:
+```
+$ npm link
 ```
 
 ### Usage
 
 #### Setup
-You have to setup the private blockchain, create accounts and pre-allocate some ether at the beginning in order to deploy your contracts. This command will also automatically compile and deploy contracts to your private blockchain.
+You have to setup the private blockchain, create accounts and pre-allocate some ether at the beginning in order to deploy your contracts. This command will also automatically compile and deploy contracts to your private blockchain. It might take a while.
 ```
-./blockchain setup
+$ ./blockchain setup
 ```
 The blockchain will be running in the background after initialization.
 
 #### Deploy
  If you just want to deploy or re-deploy your Smart Contracts, then run:
 ```
-./blockchain deploy
+$ ./blockchain deploy
 ```
 
 Blockchain has to be initialized (using `./blockchain setup`) and cannot be running in the background.
@@ -89,11 +92,20 @@ Blockchain has to be initialized (using `./blockchain setup`) and cannot be runn
 #### Stop, Start, Restart and Attach
 You can also stop, start, restart and attach to the current session.
 ```
-./blockchain stop
-./blockchain start
-./blockchain restart
-./blockchain attach
+$ ./blockchain stop
+$ ./blockchain start
+$ ./blockchain restart
+$ ./blockchain attach
 ```
+
+### `$ fincli`
+
+#### Before running `fincli`
+If you have linked or globally installed the package, you can run `fincli` to start the CLI and interact with Fincontracts on the blockchain. Before running `fincli` make sure your private blockchain is running, run `$ ./blockchain restart` to make sure. By default `geth` is logging all activity to `.geth_data/geth.log` so you can view the log in real-time with `$ tail -f .geth_data/geth.log`.
+
+#### Running `fincli`
+
+Run `$ fincli` and then type `help` to view all options.
 
 ### Development
 
