@@ -193,6 +193,7 @@ cli
 cli
   .command('select-account <index-or-address>').alias('sa')
   .autocomplete({data: () => autocompleteAccounts()})
+  .types({string: ['_']})
   .description('Selects an Ethereum account for sending transactions')
   .validate(isNodeConnected)
   .action((args, cb) => {
