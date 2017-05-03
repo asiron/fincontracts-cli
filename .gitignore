@@ -7,3 +7,4 @@ lib/
 res/password.pass
 npm-debug.log
 .DS_store
+id_rsa
