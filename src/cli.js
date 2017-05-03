@@ -148,7 +148,7 @@ function autocompleteAccounts() {
   return [...indicies, ...accounts];
 }
 
-connectToEthereumNode('http://localhost:8000');
+connectToEthereumNode('http://localhost:8545');
 
 cli
   .command('connect <host>').alias('c')
