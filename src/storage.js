@@ -66,7 +66,6 @@ export default class FincontractStorage extends Storage {
       this.removeFromStorage(FincontractStorage.IDS_CAT, id);
   }
 
-
   getFincontractIDs() {
     return Object.keys(this.getFromStorage(FincontractStorage.IDS_CAT));
   }

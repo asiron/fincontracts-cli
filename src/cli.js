@@ -67,19 +67,18 @@ async function checkAndRegisterAccount() {
 
 function generateDOTGraph(fctID, options) {
   return commandExists('dot')
-    .then(async cmd => {
+    .then(async () => {
       const dg = new finlib.DotGenerator();
       const f = new finlib.Fetcher(marketplace);
       const fincontract = await f.pullFincontract(fctID);
       const dotString = dg.generate(fincontract);
       const fs = require('fs');
-      const path = require('path');
       const basename = (options.graph === true) ? `/tmp/fincontract` : options.graph;
       const dotFilename = `${basename}.dot`;
       const pdfFilename = `${basename}.pdf`;
-      fs.writeFile(dotFilename, dotString, (err) => {
-        if(err) {
-            return cli.log(error(err));
+      fs.writeFile(dotFilename, dotString, err => {
+        if (err) {
+          return cli.log(error(err));
         }
         cli.log(info(`Written DOT file to: ${dotFilename}`));
       });
@@ -88,7 +87,7 @@ function generateDOTGraph(fctID, options) {
         return;
       }
       const exec = require('child_process').exec;
-      const command = `dot -Tpdf ${dotFilename} -o ${pdfFilename}`
+      const command = `dot -Tpdf ${dotFilename} -o ${pdfFilename}`;
       exec(command, (err, stdout, stderr) => {
         if (stdout) {
           cli.log(info(`stdout: ${stdout}`));
@@ -147,6 +146,8 @@ function autocompleteAccounts() {
   const indicies = [...Array(accounts.length).keys()].map(x => x.toString());
   return [...indicies, ...accounts];
 }
+
+cli.log(chalk.magenta(`${figures.star} Welcome to Fincontracts CLI ${figures.star}`));
 
 cli
   .command('connect <host>').alias('c')

@@ -19,13 +19,14 @@ You will need the following software:
 - geth [1.6.0-stable]
 - solc [0.4.10]
 - ruby [1.9.3]
+- graphviz [2.40.1] if you want to generate DOT graphs
 
 #### Installing prerequisites on macOS using homebrew
 
 ```
 $ brew update
 $ brew upgrade
-$ brew install node jq
+$ brew install node jq graphviz
 $ brew tap ethereum/ethereum
 $ brew install ethereum solidity
 ```
@@ -33,10 +34,10 @@ $ brew install ethereum solidity
 #### Install prerequisites on Debian/Ubuntu
 
 
-#### Install `node.js`, `npm` and `jq`
+#### Install `node.js`, `npm`, `jq` and `graphviz`
 ```
 $ sudo apt-get update
-$ sudo apt-get install nodejs npm jq
+$ sudo apt-get install nodejs npm jq graphviz
 ```
 
 #### Install `geth` and `solc`
