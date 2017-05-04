@@ -244,7 +244,9 @@ cli
       } else {
         createdFincontractID = await d.deploy(desc);
       }
-
+      if (storage.addFincontractID(createdFincontractID)) {
+        cli.log(info('ID added to autocomplete!'));
+      }
       if (args.options.save) {
         const name = args.options.save;
         const ow = args.options.overwrite;

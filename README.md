@@ -1,4 +1,4 @@
-# fincontract-client
+# fincontract-cli
 Copyright (C) 2017 - Maciej Żurad, University of Luxembourg
 
 Client for managing Fincontracts deployed on the Ethereum blockchain.
