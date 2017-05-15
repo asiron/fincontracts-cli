@@ -3,7 +3,7 @@ Copyright (C) 2017 - Maciej Żurad, University of Luxembourg
 
 Client for managing Fincontracts deployed on the Ethereum blockchain.
 For more information about Fincontracts see the paper:
-[Findel: Secure Derivative Contracts for Ethereum](https://orbilu.uni.lu/handle/10993/30975) 
+[Findel: Secure Derivative Contracts for Ethereum](https://orbilu.uni.lu/handle/10993/30975). For the Smart Contract implementation in Ethereum, see: https://github.com/cryptolu/findel
 
 ## Getting Started
 
@@ -23,7 +23,7 @@ You will need the following software:
 
 #### Installing prerequisites on macOS using homebrew
 
-```
+```shell
 $ brew update
 $ brew upgrade
 $ brew install node jq graphviz
@@ -35,14 +35,14 @@ $ brew install ethereum solidity
 
 
 #### Install `node.js`, `npm`, `jq` and `graphviz`
-```
+```shell
 $ sudo apt-get update
 $ sudo apt-get install nodejs npm jq graphviz
 ```
 
 #### Install `geth` and `solc`
 
-```
+```shell
 $ sudo apt-get install software-properties-common
 $ sudo add-apt-repository -y ppa:ethereum/ethereum
 $ sudo apt-get update
@@ -53,23 +53,23 @@ $ sudo apt-get install ethereum solc
 
 Initialize submodules and pull them by running (from the root of this repository)
 
-```
+```shell
 $ git submodule init
 $ git submodule update
 ```
 
 Install all node dependecies and compile source files to ES5 using
-```
+```shell
 $ npm install
 $ npm run build
 ```
 
 You can also **"make install"** your CLI, such that it's visible from anywhere:
-```
+```shell
 $ npm install -g
 ```
 Alternatively, you can create a link to it:
-```
+```shell
 $ npm link
 ```
 
@@ -77,14 +77,14 @@ $ npm link
 
 #### Setup
 You have to setup the private blockchain, create accounts and pre-allocate some ether at the beginning in order to deploy your contracts. This command will also automatically compile and deploy contracts to your private blockchain. It might take a while.
-```
+```shell
 $ ./blockchain setup
 ```
 The blockchain will be running in the background after initialization.
 
 #### Deploy
  If you just want to deploy or re-deploy your Smart Contracts, then run:
-```
+```shell
 $ ./blockchain deploy
 ```
 
@@ -92,7 +92,7 @@ Blockchain has to be initialized (using `./blockchain setup`) and cannot be runn
 
 #### Stop, Start, Restart and Attach
 You can also stop, start, restart and attach to the current session.
-```
+```shell
 $ ./blockchain stop
 $ ./blockchain start
 $ ./blockchain restart

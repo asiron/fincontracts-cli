@@ -3,5 +3,4 @@
 	url = git@github.com:Asiron/solidity_compiler_helper.git
 [submodule "contracts/fincontracts"]
 	path = contracts/fincontracts
-	url = git@bitbucket.org:s-tikhomirov/fincontracts.git
-	branch = devel
+	url = git@github.com:cryptolu/findel.git
