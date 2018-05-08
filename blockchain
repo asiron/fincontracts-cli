@@ -7,7 +7,7 @@ ACCOUNT_PASSWORDS=(account0 account1 account2)
 PASSWORD_FILE=res/password.pass
 
 DATA_DIR=`pwd`/.geth_data/
-GETH_PARAMS=(--identity "FincontractsTestNet" --maxpeers 0 --rpc --rpcport "8545" --rpccorsdomain "*" --datadir $DATA_DIR --port "30303" --nodiscover --rpcapi "db,eth,net,web3,personal" --networkid 1900 --verbosity $VERBOSITY --nat "none")
+GETH_PARAMS=(--identity "FincontractsTestNet" --maxpeers 0 --rpc --rpcport "8545" --rpccorsdomain "\"*\"" --datadir $DATA_DIR --port "30303" --nodiscover --rpcapi "db,eth,net,web3,personal" --networkid 1900 --verbosity $VERBOSITY --nat "none" --ipcdisable)
 MINE_PARAMS=(--mine --minerthreads 1)
 UNLOCK_PARAMS=(--unlock $(join_by , ${!ACCOUNT_PASSWORDS[@]}) --password res/password.pass)
 
